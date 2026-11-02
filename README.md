@@ -16,14 +16,29 @@ VTOP puts every course from every semester into one long dropdown, and the mater
 
 ## Install (about 1 minute)
 
-Works on Chrome, Edge, Brave, and other Chromium browsers on a laptop or desktop.
+Works on Chrome, Edge, Brave, and other Chromium browsers on a laptop or desktop. Pick **one** of the two options below.
+
+### Option A: Download the ZIP (simplest)
 
 1. Click the green **Code** button on this page, then **Download ZIP**.
 2. Unzip it. You should see a folder containing `manifest.json` and `content.js`.
-3. Open `chrome://extensions` (in Edge: `edge://extensions`).
-4. Turn on **Developer mode** (top right).
-5. Click **Load unpacked** and select the unzipped folder, the one that directly contains `manifest.json`.
-6. Open VTOP, go to **Academics → Course Page Consolidated**, and press **Ctrl + Shift + R** to refresh.
+
+### Option B: Clone with Git (easiest to update later)
+
+If you have [Git](https://git-scm.com/downloads) installed, open a terminal in the folder where you want to keep the extension and run:
+
+```bash
+git clone https://github.com/kamran2908/vtop-course-filter.git
+```
+
+This creates a `vtop-course-filter` folder containing `manifest.json` and `content.js`. When a new version comes out, you only need to run `git pull` inside that folder (see [Updating](#updating)).
+
+### Then load it into your browser (both options)
+
+1. Open `chrome://extensions` (in Edge: `edge://extensions`).
+2. Turn on **Developer mode** (top right).
+3. Click **Load unpacked** and select the folder that directly contains `manifest.json` (the unzipped folder, or the cloned `vtop-course-filter` folder).
+4. Open VTOP, go to **Academics → Course Page Consolidated**, and press **Ctrl + Shift + R** to refresh.
 
 You should now see three dropdowns above the course materials.
 
@@ -36,14 +51,28 @@ You should now see three dropdowns above the course materials.
 
 ## Updating
 
-This extension does not update itself. When a new version is released:
+This extension does not update itself. When a new version is released, follow the option that matches how you installed it.
+
+### If you cloned with Git
+
+1. Open a terminal inside the `vtop-course-filter` folder.
+2. Run:
+
+```bash
+git pull
+```
+
+3. Go to `chrome://extensions` and click the **reload** icon on the extension's card.
+4. Refresh VTOP with Ctrl + Shift + R.
+
+You do not need to load the extension again. The folder stays the same, so only the reload step is needed.
+
+### If you downloaded the ZIP
 
 1. Download the new ZIP from the [Releases page](https://github.com/kamran2908/vtop-course-filter/releases).
 2. Replace the old folder's files with the new ones.
 3. Go to `chrome://extensions` and click the **reload** icon on the extension's card.
 4. Refresh VTOP with Ctrl + Shift + R.
-
-If you used `git clone`, just run `git pull` and reload the extension.
 
 ## Is it safe?
 
@@ -59,6 +88,8 @@ You can read all the code yourself. It is two short files, and nothing is hidden
 
 - **Nothing changed on VTOP.** Make sure the extension is switched on in `chrome://extensions`, then hard-refresh VTOP (Ctrl + Shift + R).
 - **"Manifest file is missing" when loading.** You selected the wrong folder. Pick the folder that directly contains `manifest.json`, not its parent folder.
+- **`git pull` says you have local changes.** You edited a file in the folder. Run `git stash` and then `git pull`, or re-clone the repo.
+- **`git pull` says local changes would be overwritten.** You edited a file in the folder. Run `git stash` and then `git pull` again, or re-clone the repo.
 - **A "disable developer mode extensions" popup appears when Chrome starts.** This is normal for extensions loaded outside the Web Store. You can dismiss it.
 - **Faculty list is empty or incomplete.** Wait a couple of seconds after choosing the subject. If it still looks wrong, open an Issue (see below).
 - **Stopped working after a VTOP update.** VIT may have changed the page layout. Please open an Issue.
