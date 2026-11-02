@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "VTOP Course Page Filter",
+  "version": "1.1",
+  "description": "Segregates VTOP Course Page Consolidated by Semester, Subject, and Faculty.",
+  "content_scripts": [
+    {
+      "matches": ["https://vtop.vit.ac.in/vtop/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle",
+      "world": "MAIN"
+    }
+  ]
+}
