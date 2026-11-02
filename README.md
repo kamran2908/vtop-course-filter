@@ -8,6 +8,8 @@ VTOP puts every course from every semester into one long dropdown, and the mater
 2. **Subject dropdown with live search**: shows only the courses of the chosen semester. Type a code or title to narrow the list.
 3. **Faculty dropdown with live search**: lists every professor who uploaded material for that subject, **across all pages of the table**, not just page 1. Pick one and the table shows only that professor's files.
 
+It is built to be quick: your last-used semester is pre-selected, subjects you have opened before show their faculty list instantly, and a small loading bar shows while VTOP fetches the table.
+
 ## Before and after
 
 | Before (default VTOP) | After (with the extension) |
@@ -16,7 +18,7 @@ VTOP puts every course from every semester into one long dropdown, and the mater
 
 ## Install (about 1 minute)
 
-Works on Chrome, Edge, Brave, and other Chromium browsers on a laptop or desktop. Pick **one** of the two options below.
+Works on Chrome, Edge, Brave, and other Chromium browsers (version 111 or newer) on a laptop or desktop. Pick **one** of the two options below.
 
 ### Option A: Download the ZIP (simplest)
 
@@ -83,6 +85,7 @@ You can read all the code yourself. It is two short files, and nothing is hidden
 - It does **not** read, store, or transmit your password, cookies, marks, or any personal data.
 - It only rearranges what VTOP already shows on the Course Page Consolidated screen: it reads the course dropdown and the materials table, and adds filter controls.
 - It requests **no special browser permissions**.
+- To make repeat visits instant, it remembers the **faculty names per subject** and your **last-used semester** in your own browser's local storage. This stays on your computer and is never sent anywhere. Clear your site data for VTOP to erase it.
 
 ## Troubleshooting
 

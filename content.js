@@ -42,6 +42,44 @@
   };
 
   /* ------------------------------------------------------------------ */
+  /*  Tiny persistent cache: faculty names per subject + last semester   */
+  /*  (stored only in this browser's localStorage; nothing is sent out)  */
+  /* ------------------------------------------------------------------ */
+  const LS_KEY = "vtopFilter.v1";
+  const CACHE_TTL = 14 * 24 * 3600 * 1000;
+  const CACHE_MAX = 80;
+  let persist = { sem: "", fac: {} };
+  try {
+    const o = JSON.parse(localStorage.getItem(LS_KEY) || "null");
+    if (o && typeof o === "object") persist = { sem: o.sem || "", fac: o.fac || {} };
+  } catch (e) {}
+  const savePersist = debounce(() => {
+    try {
+      localStorage.setItem(LS_KEY, JSON.stringify(persist));
+    } catch (e) {}
+  }, 300);
+  function cacheGet(subj) {
+    const e = persist.fac[subj];
+    if (!e || !Array.isArray(e.f) || Date.now() - e.t > CACHE_TTL) return null;
+    return e.f.map((x) => ({ name: x[0], count: x[1] }));
+  }
+  function cacheSet(subj, list) {
+    persist.fac[subj] = { t: Date.now(), f: list.map((f) => [f.name, f.count]) };
+    const keys = Object.keys(persist.fac);
+    if (keys.length > CACHE_MAX) {
+      keys
+        .sort((a, b) => persist.fac[a].t - persist.fac[b].t)
+        .slice(0, keys.length - CACHE_MAX)
+        .forEach((k) => delete persist.fac[k]);
+    }
+    savePersist();
+  }
+  function setBusy(on) {
+    const b = $("vtop-busy");
+    if (b) b.style.display = on ? "block" : "none";
+  }
+
+  /* ------------------------------------------------------------------ */
   /*  Keep the UI alive when VTOP swaps its DOM (cheap, debounced)       */
   /* ------------------------------------------------------------------ */
   let scanTimer = null;
@@ -255,6 +293,11 @@
       if (!state.courses[state.sem]) state.sem = "";
     }
 
+    // Save a click: pre-select the last-used semester, else the newest one
+    if (!state.sem || !state.courses[state.sem]) {
+      state.sem = persist.sem && state.courses[persist.sem] ? persist.sem : state.sems[0] || "";
+    }
+
     native.style.display = "none";
     const sib = native.nextElementSibling;
     if (sib && /select2|chosen|bootstrap-select|ms-parent/.test(sib.className || "")) {
@@ -299,7 +342,11 @@
         <select id="vtop-fac-select" class="form-control" style="${selCss}" disabled>
           <option value="ALL">-- Select Subject First --</option>
         </select>
-      </div>`;
+      </div>
+      <div id="vtop-busy" style="display:none;grid-column:1/-1;height:3px;border-radius:2px;
+        background:linear-gradient(90deg,transparent,#3b82f6,transparent);background-size:40% 100%;
+        background-repeat:no-repeat;animation:vtopSlide 1s linear infinite;"></div>
+      <style>@keyframes vtopSlide{0%{background-position:-40% 0}100%{background-position:140% 0}}</style>`;
 
     native.parentNode.insertBefore(box, native);
 
@@ -324,13 +371,26 @@
       subjSearch.value = state.subjQ;
       renderSubjects();
       if (state.subj) {
-        facSel.innerHTML = '<option value="ALL">Loading materials...</option>';
+        const c = state.faculty.length ? state.faculty : cacheGet(state.subj);
+        if (c && c.length) {
+          state.faculty = c;
+          facSel.disabled = false;
+          facSearch.disabled = false;
+          facSearch.value = state.facQ;
+          renderFaculty();
+        } else {
+          facSel.innerHTML = '<option value="ALL">Loading materials...</option>';
+        }
         waitForTable(null);
       }
     }
 
     semSel.addEventListener("change", () => {
       state.sem = semSel.value;
+      if (state.sem) {
+        persist.sem = state.sem;
+        savePersist();
+      }
       state.subj = "";
       state.fac = "ALL";
       state.subjQ = "";
@@ -366,7 +426,7 @@
       facSearch.value = "";
 
       // Seen this subject before? Show its faculty instantly while VTOP loads the table.
-      const cached = state.cache.get(val);
+      const cached = cacheGet(val);
       if (cached) {
         state.faculty = cached;
         facSel.disabled = false;
@@ -475,6 +535,7 @@
   function waitForTable(stale) {
     clearInterval(state.timer);
     state.pending = { stale, t0: Date.now(), foundAt: 0, sent: 0, done: 0, ajaxDone: false };
+    setBusy(true);
     state.timer = setInterval(tryExtract, POLL_MS);
     tryExtract();
   }
@@ -483,6 +544,7 @@
     clearInterval(state.timer);
     state.timer = null;
     state.pending = null;
+    setBusy(false);
   }
 
   function tryExtract() {
@@ -548,7 +610,7 @@
     state.faculty = Array.from(counts, ([name, count]) => ({ name, count })).sort((a, b) =>
       a.name.localeCompare(b.name)
     );
-    if (state.subj) state.cache.set(state.subj, state.faculty);
+    if (state.subj) cacheSet(state.subj, state.faculty);
 
     const facSel = $("vtop-fac-select");
     const facSearch = $("vtop-fac-search");
