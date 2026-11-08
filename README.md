@@ -57,7 +57,7 @@ You should now see three dropdowns above the course materials.
 VTOP names every download something like:
 
 ```
-FALLSEM2026-27_VL_BCSE303L_00100_TH_2026-11-02_Module-6.pdf
+FALLSEM2026-27_VL_BCSE303L_00100_TH_2026-11-02_File Name.pdf
 ```
 
 With this extension the same file is saved as:
