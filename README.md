@@ -7,6 +7,7 @@ VTOP puts every course from every semester into one long dropdown, and the mater
 1. **Semester dropdown**: newest semester first, with the number of courses in each.
 2. **Subject dropdown with live search**: shows only the courses of the chosen semester. Type a code or title to narrow the list.
 3. **Faculty dropdown with live search**: lists every professor who uploaded material for that subject, **across all pages of the table**, not just page 1. Pick one and the table shows only that professor's files.
+4. **Clean download names**: files you download from the table are saved as `Subject_Faculty_FileName` instead of VTOP's long default name.
 
 It is built to be quick: your last-used semester is pre-selected, subjects you have opened before show their faculty list instantly, and a small loading bar shows while VTOP fetches the table.
 
@@ -51,6 +52,27 @@ You should now see three dropdowns above the course materials.
 3. Wait a moment while VTOP loads the materials. The **faculty** dropdown fills in automatically.
 4. Pick a professor, or type their name in the faculty search box. The table filters instantly.
 
+## Clean download names
+
+VTOP names every download something like:
+
+```
+FALLSEM2026-27_VL_BCSE303L_00100_TH_2026-11-02_Module-6.pdf
+```
+
+With this extension the same file is saved as:
+
+```
+Operating Systems_DHIVYAA C R_Module-6.pdf
+```
+
+That is: subject name, then faculty name, then the real file name. The semester code, course code, class number and upload date are dropped.
+
+- It only applies to files you download by clicking in the Course Materials table.
+- If a file with that name already exists, your browser adds `(1)`, `(2)`, and so on, as usual.
+- Don't want it? Untick **Rename downloads...** in the panel above the table. It remembers your choice.
+- Characters that Windows doesn't allow in file names (`\ / : * ? " < > |`) are replaced with spaces.
+
 ## Updating
 
 This extension does not update itself. When a new version is released, follow the option that matches how you installed it.
@@ -78,13 +100,15 @@ You do not need to load the extension again. The folder stays the same, so only 
 
 ## Is it safe?
 
-You can read all the code yourself. It is two short files, and nothing is hidden or minified.
+You can read all the code yourself. It is only a handful of small files (`manifest.json`, `content.js`, `downloads.js`, `background.js`), and nothing is hidden or minified.
 
 - It runs **only** on `https://vtop.vit.ac.in/vtop/*`.
 - It makes **no network requests**. Nothing is sent anywhere.
 - It does **not** read, store, or transmit your password, cookies, marks, or any personal data.
 - It only rearranges what VTOP already shows on the Course Page Consolidated screen: it reads the course dropdown and the materials table, and adds filter controls.
-- It requests **no special browser permissions**.
+- It asks for two browser permissions, only for the download renaming:
+  - `downloads`: to change the **name** of a file you just downloaded from VTOP. It does not read file contents, other downloads, or your download history.
+  - `storage`: to hold a short note (subject, faculty, file label) of the row you clicked for 20 seconds, so the right name can be applied. It is cleared automatically and never leaves your browser.
 - To make repeat visits instant, it remembers the **faculty names per subject** and your **last-used semester** in your own browser's local storage. This stays on your computer and is never sent anywhere. Clear your site data for VTOP to erase it.
 
 ## Troubleshooting
@@ -94,6 +118,8 @@ You can read all the code yourself. It is two short files, and nothing is hidden
 - **`git pull` says you have local changes.** You edited a file in the folder. Run `git stash` and then `git pull`, or re-clone the repo.
 - **`git pull` says local changes would be overwritten.** You edited a file in the folder. Run `git stash` and then `git pull` again, or re-clone the repo.
 - **A "disable developer mode extensions" popup appears when Chrome starts.** This is normal for extensions loaded outside the Web Store. You can dismiss it.
+- **Downloads are not renamed.** Make sure the **Rename downloads...** box is ticked, reload the extension in `chrome://extensions`, and hard-refresh VTOP. Only files downloaded by clicking inside the Course Materials table are renamed. If another extension manages your downloads, it may override the name.
+- **I updated and the rename feature is missing.** v1.3 added new files, so replace the whole folder (or `git pull`), reload the extension, and refresh VTOP.
 - **Faculty list is empty or incomplete.** Wait a couple of seconds after choosing the subject. If it still looks wrong, open an Issue (see below).
 - **Stopped working after a VTOP update.** VIT may have changed the page layout. Please open an Issue.
 
@@ -103,6 +129,7 @@ Open an [Issue](https://github.com/kamran2908/vtop-course-filter/issues) and inc
 
 - A screenshot of the page.
 - Your browser and version.
+- For rename problems: the original VTOP file name and the name it was saved as.
 - Open the browser console (press F12, then the **Console** tab) and copy any line that starts with `[VTOP Filter]`.
 
 ## Known limitations

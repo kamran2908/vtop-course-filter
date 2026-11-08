@@ -307,7 +307,7 @@
     const box = document.createElement("div");
     box.id = UI_ID;
     box.style.cssText =
-      "display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;padding:16px;" +
+      "display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding:16px;" +
       "background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;margin:8px 0 12px;width:100%;" +
       "box-sizing:border-box;flex:1 1 100%;font-family:inherit;box-shadow:0 1px 2px rgba(0,0,0,.05);";
 
@@ -346,7 +346,11 @@
       <div id="vtop-busy" style="display:none;grid-column:1/-1;height:3px;border-radius:2px;
         background:linear-gradient(90deg,transparent,#3b82f6,transparent);background-size:40% 100%;
         background-repeat:no-repeat;animation:vtopSlide 1s linear infinite;"></div>
-      <style>@keyframes vtopSlide{0%{background-position:-40% 0}100%{background-position:140% 0}}</style>`;
+      <label style="grid-column:1/-1;display:flex;align-items:center;gap:6px;margin:0;font-size:12px;color:#475569;cursor:pointer;">
+        <input type="checkbox" id="vtop-rename-toggle" checked />
+        Rename downloads as Subject_Faculty_FileName (turn off to keep VTOP's original names)
+      </label>
+      <style>@keyframes vtopSlide{0%{background-position:-40% 0}100%{background-position:140% 0}}@media (max-width:900px){#vtop-custom-course-filter{grid-template-columns:minmax(0,1fr) !important}}</style>`;
 
     native.parentNode.insertBefore(box, native);
 
@@ -355,6 +359,16 @@
     const subjSearch = $("vtop-subj-search");
     const facSel = $("vtop-fac-select");
     const facSearch = $("vtop-fac-search");
+
+    const renameBox = $("vtop-rename-toggle");
+    try {
+      renameBox.checked = localStorage.getItem("vtopFilter.rename") !== "0";
+    } catch (e) {}
+    renameBox.addEventListener("change", () => {
+      try {
+        localStorage.setItem("vtopFilter.rename", renameBox.checked ? "1" : "0");
+      } catch (e) {}
+    });
 
     const frag = document.createDocumentFragment();
     state.sems.forEach((sem) => {

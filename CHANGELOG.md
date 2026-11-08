@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.3
+- New: downloaded files are renamed to `Subject_Faculty_FileName` (for example `Operating Systems_DHIVYAA C R_Module-6.pdf`) instead of VTOP's long default name with the semester code, course code, class number and upload date.
+- New tick box in the panel to turn the renaming off.
+- New files: `background.js` and `downloads.js`.
+- New browser permissions: `downloads` (to rename the file) and `storage` (a 20-second note of the row you clicked). After updating, reload the extension from `chrome://extensions`.
+
 ## v1.2
 - Faster repeat use: faculty lists are remembered per subject in your browser, so subjects you have opened before show their faculty instantly (they refresh automatically once VTOP loads the table).
 - Your last-used semester is pre-selected (newest semester on first use), saving a click.
