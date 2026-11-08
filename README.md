@@ -63,7 +63,7 @@ FALLSEM2026-27_VL_BCSE303L_00100_TH_2026-11-02_Module-6.pdf
 With this extension the same file is saved as:
 
 ```
-Operating Systems_DHIVYAA C R_Module-6.pdf
+Operating Systems_Faculty Name_File Name.pdf
 ```
 
 That is: subject name, then faculty name, then the real file name. The semester code, course code, class number and upload date are dropped.
